@@ -15,5 +15,8 @@ COPY . .
 # חשיפת הפורט שהאפליקציה מאזינה לו (לדוגמה, 5005)
 EXPOSE 5005
 
-# הרצת האפליקציה באמצעות xvfb-run כדי לדמות ממשק תצוגה
-CMD ["xvfb-run", "python", "chatbot.py"]
+# הגדרת משתנה סביבה DISPLAY (לדוגמה, :99)
+ENV DISPLAY=:99
+
+# הרצת האפליקציה באמצעות xvfb-run עם אפשרות auto-servernum
+CMD ["xvfb-run", "--auto-servernum", "python", "chatbot.py"]
