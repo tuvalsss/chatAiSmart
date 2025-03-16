@@ -1,7 +1,9 @@
+import os
+os.environ["DISPLAY"] = ":99"
+
 import subprocess
 import pyautogui
 import time
-import os
 import threading
 import re
 from flask import Flask, request, jsonify, send_from_directory
