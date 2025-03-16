@@ -20,3 +20,5 @@ ENV DISPLAY=:99
 
 # הרצת האפליקציה באמצעות xvfb-run עם אפשרות auto-servernum
 CMD ["xvfb-run", "--auto-servernum", "python", "chatbot.py"]
+
+RUN apt-get update && apt-get install -y xvfb curl
