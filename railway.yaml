@@ -1,0 +1,3 @@
+deploy:
+  # מזהיר את Railway לא להשתמש ב-Nixpacks
+  ignoreNixpacks: true
