@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatBot</title>
+  <style>
+    /* עיצוב כללי */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
+    .container {
+      width: 90%;
+      max-width: 700px;
+      background: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chat-box {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 15px;
+      background: #fafafa;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+    .chat-box p {
+      margin: 5px 0;
+    }
+    .input-container {
+      display: flex;
+      margin-bottom: 15px;
+    }
+    .input-container input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .input-container button {
+      padding: 12px 24px;
+      margin-left: 8px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 16px;
+    }
+    .input-container button:hover {
+      background: #0069d9;
+    }
+    .file-upload {
+      margin-bottom: 15px;
+    }
+    .file-upload button {
+      padding: 12px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 16px;
+    }
+    .file-upload button:hover {
+      background: #218838;
+    }
+    h3 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 20px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+    }
+    .system-functions, .cursor-buttons, .toggle-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .system-functions button,
+    .cursor-buttons button,
+    .toggle-section button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #6c757d;
+      color: #fff;
+      transition: background 0.3s ease;
+      font-size: 14px;
+    }
+    .system-functions button:hover,
+    .cursor-buttons button:hover,
+    .toggle-section button:hover {
+      background: #5a6268;
+    }
+    .toggle-section .on {
+      background: #007bff;
+    }
+    .toggle-section .off {
+      background: #343a40;
+    }
+    .log-box {
+      height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 8px;
+    }
+    #passwordPrompt {
+      margin-top: 50px;
+      text-align: center;
+    }
+    #passwordPrompt input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    #passwordPrompt button {
+      padding: 12px 24px;
+      margin-left: 8px;
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 16px;
+    }
+    #passwordPrompt button:hover {
+      background: #c82333;
+    }
+    /* עיצוב מודאל לקריאת README */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%;
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.5); 
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto; 
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h2 {
+      margin: 0;
+    }
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <!-- סיסמה -->
+  <div id="passwordPrompt">
+    <h2>הכנס סיסמה</h2>
+    <input type="password" id="passwordInput" placeholder="הקלד סיסמה...">
+    <button onclick="checkPassword()">אשר</button>
+  </div>
+  
+  <!-- ממשק ראשי -->
+  <div class="container" id="mainContainer">
+    <h2>ChatBot</h2>
+    <div class="chat-box" id="chat-box"></div>
+    
+    <div class="input-container">
+      <input type="text" id="message" placeholder="הקלד הודעה...">
+      <button onclick="sendMessage()">שלח</button>
+    </div>
+    
+    <div class="file-upload">
+      <input type="file" id="fileInput">
+      <button onclick="uploadFile()">📤 העלאת קובץ</button>
+    </div>
+    
+    <h3>פונקציות מערכת</h3>
+    <div class="system-functions">
+      <button onclick="runQA()">🔍 בצע QA</button>
+      <button onclick="backupGit()">📦 גיבוי GitHub</button>
+      <button onclick="indexProject()">📂 אינדוקס פרויקט</button>
+    </div>
+    
+    <h3>פקודות קורסור</h3>
+    <div class="cursor-buttons">
+      <button onclick="sendCursorCommand('accept-all')">Accept All</button>
+      <button onclick="sendCursorCommand('go chat')">Go Chat</button>
+      <button onclick="sendCursorCommand('add file')">Add File</button>
+      <button onclick="sendCursorCommand('send button')">Send Button</button>
+      <button onclick="sendCursorCommand('new chat')">New Chat</button>
+    </div>
+    
+    <h3>מצבי הפעלה</h3>
+    <div class="toggle-section">
+      <button id="toggleCursorMode" class="off" onclick="toggleCursorMode()">מצב קורסור: כבוי</button>
+      <button id="toggleAutonomous" class="off" onclick="toggleAutonomous()">מצב אוטונומי: כבוי</button>
+      <button id="toggleBot" class="on" onclick="toggleBot()">בוט: מופעל</button>
+      <button id="openReadme" onclick="openReadme()">קרא README</button>
+    </div>
+    
+    <h3>🔍 לוג פעולות</h3>
+    <div class="log-box" id="log-box"></div>
+  </div>
+
+  <!-- מודאל להצגת README -->
+  <div id="readmeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>README</h2>
+        <span class="close" onclick="closeModal()">&times;</span>
+      </div>
+      <div id="readmeContent" style="max-height:400px; overflow-y:auto; margin-top:15px;"></div>
+    </div>
+  </div>
+  
+  <script>
+    let cursorModeActive = false;
+    let autonomousActive = false;
+    let botActive = true;
+    
+    function checkPassword() {
+      const password = document.getElementById("passwordInput").value;
+      if (password === "5254") {
+        document.getElementById("passwordPrompt").style.display = "none";
+        document.getElementById("mainContainer").style.display = "block";
+      } else {
+        alert("סיסמה שגויה! נסה שוב.");
+      }
+    }
+    
+    function sendMessage() {
+      const msg = document.getElementById("message").value;
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<p><strong>אתה:</strong> ${msg}</p>`;
+      document.getElementById("message").value = "";
+      
+      fetch("http://127.0.0.1:5000/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      })
+      .then(res => res.json())
+      .then(data => {
+        chatBox.innerHTML += `<p><strong>🤖 GPT:</strong> ${data.response}</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+        updateLog("הודעת GPT: " + data.response);
+      })
+      .catch(err => console.error("❌ שגיאה בשליחת ההודעה:", err));
+    }
+    
+    function runQA() {
+      fetch("http://127.0.0.1:5000/run_qa", { method: "POST" })
+      .then(res => res.json())
+      .then(data => updateLog("QA הושלם: " + data.status))
+      .catch(err => console.error("❌ שגיאה בביצוע QA:", err));
+    }
+    
+    function backupGit() {
+      fetch("http://127.0.0.1:5000/backup_github", { method: "POST" })
+      .then(res => res.json())
+      .then(data => updateLog("גיבוי הושלם: " + data.status))
+      .catch(err => console.error("❌ שגיאה בגיבוי GitHub:", err));
+    }
+    
+    function indexProject() {
+      fetch("http://127.0.0.1:5000/index_project", { method: "POST" })
+      .then(res => res.json())
+      .then(data => updateLog("אינדוקס הושלם: " + data.status))
+      .catch(err => console.error("❌ שגיאה באינדוקס הפרויקט:", err));
+    }
+    
+    function sendCursorCommand(cmd) {
+      fetch("http://127.0.0.1:5000/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: "cursor " + cmd })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("תשובת השרת:", data.response);
+        updateLog("פקודת קורסור: " + data.response);
+      })
+      .catch(err => console.error("❌ שגיאה בשליחת פקודת קורסור:", err));
+    }
+    
+    function toggleCursorMode() {
+      const button = document.getElementById("toggleCursorMode");
+      if (cursorModeActive) {
+        fetch("http://127.0.0.1:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "exit cursor mode" })
+        })
+        .then(res => res.json())
+        .then(data => {
+          updateLog("יציאה ממצב קורסור: " + data.response);
+          button.innerText = "מצב קורסור: כבוי";
+          button.className = "off";
+          cursorModeActive = false;
+        })
+        .catch(err => console.error("❌ שגיאה ביציאה ממצב קורסור:", err));
+      } else {
+        fetch("http://127.0.0.1:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "enter cursor mode" })
+        })
+        .then(res => res.json())
+        .then(data => {
+          updateLog("כניסה למצב קורסור: " + data.response);
+          button.innerText = "מצב קורסור: דלוק";
+          button.className = "on";
+          cursorModeActive = true;
+        })
+        .catch(err => console.error("❌ שגיאה בכניסה למצב קורסור:", err));
+      }
+    }
+    
+    function toggleAutonomous() {
+      const button = document.getElementById("toggleAutonomous");
+      if (autonomousActive) {
+        fetch("http://127.0.0.1:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "exit autonomous" })
+        })
+        .then(res => res.json())
+        .then(data => {
+          updateLog("מצב אוטונומי כבוי: " + data.response);
+          button.innerText = "מצב אוטונומי: כבוי";
+          button.className = "off";
+          autonomousActive = false;
+        })
+        .catch(err => console.error("❌ שגיאה בכיבוי מצב אוטונומי:", err));
+      } else {
+        fetch("http://127.0.0.1:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "go chat" })
+        })
+        .then(res => res.json())
+        .then(data => {
+          updateLog("מצב אוטונומי מופעל: " + data.response);
+          button.innerText = "מצב אוטונומי: דלוק";
+          button.className = "on";
+          autonomousActive = true;
+        })
+        .catch(err => console.error("❌ שגיאה בהפעלת מצב אוטונומי:", err));
+      }
+    }
+    
+    function toggleBot() {
+      const button = document.getElementById("toggleBot");
+      if (botActive) {
+        fetch("http://127.0.0.1:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "bot off" })
+        })
+        .then(res => res.json())
+        .then(data => {
+          updateLog("בוט כבוי: " + data.response);
+          button.innerText = "בוט: כבוי";
+          button.className = "off";
+          botActive = false;
+        })
+        .catch(err => console.error("❌ שגיאה בהפעלת מצב בוט:", err));
+      } else {
+        fetch("http://127.0.0.1:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "bot on" })
+        })
+        .then(res => res.json())
+        .then(data => {
+          updateLog("בוט מופעל: " + data.response);
+          button.innerText = "בוט: מופעל";
+          button.className = "on";
+          botActive = true;
+        })
+        .catch(err => console.error("❌ שגיאה בהפעלת מצב בוט:", err));
+      }
+    }
+    
+    function openReadme() {
+      fetch("http://127.0.0.1:5000/read_readme")
+      .then(res => res.json())
+      .then(data => {
+        if(data.readme) {
+          document.getElementById("readmeContent").innerText = data.readme;
+          document.getElementById("readmeModal").style.display = "block";
+        } else {
+          alert("Error: " + data.error);
+        }
+      })
+      .catch(err => console.error("❌ Error fetching README:", err));
+    }
+    
+    function closeModal() {
+      document.getElementById("readmeModal").style.display = "none";
+    }
+    
+    function updateLog(message) {
+      const logBox = document.getElementById("log-box");
+      logBox.innerHTML += `<p>${message}</p>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+    
+    function uploadFile() {
+      updateLog("פונקציית העלאת קובץ עדיין לא ממומשת.");
+    }
+  </script>
+</body>
+</html>

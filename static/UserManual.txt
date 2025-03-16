@@ -1,0 +1,65 @@
+User Manual for Chatbot Controller (English)
+
+Introduction:
+This Chatbot Controller system allows you to manage and automate interactions with your chat interface via WhatsApp. It utilizes OCR to capture chat content and provides various commands to control your cursor for performing actions on your computer.
+
+Available Commands:
+1. TUT - Returns this user manual.
+2. SHOW COMMANDS - Sends a list of interactive commands.
+3. TOGGLE CURSOR - Toggles cursor mode. When enabled, all messages are interpreted as cursor commands.
+4. ENTER CURSOR MODE - Forces the system into cursor mode.
+5. EXIT CURSOR MODE - Exits cursor mode and updates the README.
+6. ACCEPT ALL - Executes the "ACCEPT ALL" action (clicks the designated button).
+7. GO CHAT - Moves the cursor to the chat input box.
+8. GO CHAT REGION - Updates the chat region based on the 'chat_area.png' template.
+9. GETIMAGESNOW - Captures and sends a current image of the chat area.
+10. TOGGLE AUTONOMOUS - Toggles autonomous mode; the system automatically generates commands based on the current chat content.
+11. Additional Commands: QA, BACKUP, INDEX, READ CHAT, etc.
+
+Setup Instructions:
+- Place the required images (chat_input.png and chat_area.png) in the same directory as the application.
+- Ensure that Tesseract OCR is installed and correctly configured.
+- The server must be publicly accessible (for example, via ngrok) to send media via WhatsApp.
+- Save this manual (UserManual.txt) in the same directory so it can be served to users.
+
+Troubleshooting:
+- If a command does not work, verify that you are using the correct syntax.
+- Confirm that screen coordinates and images are properly configured.
+- Check server logs for error messages.
+- For further assistance, contact your system administrator.
+
+Thank you for using the Chatbot Controller system!
+
+---------------------------------------------------------
+
+מדריך משתמש למערכת ניהול הצ'אט (עברית)
+
+מבוא:
+מערכת ניהול הצ'אט מאפשרת לך לנהל ואוטומציה של אינטראקציות עם ממשק הצ'אט שלך דרך וואטסאפ. המערכת משתמשת ב-OCR ללכידת תוכן הצ'אט ומספקת מגוון פקודות לשליטה על הקורסור לביצוע פעולות במחשב שלך.
+
+פקודות זמינות:
+1. TUT - מחזיר את מדריך המשתמש הזה.
+2. SHOW COMMANDS - שולח רשימה של פקודות אינטראקטיביות.
+3. TOGGLE CURSOR - מפעיל או מכבה את מצב הקורסור. כאשר מופעל, כל ההודעות מתפרשות כפקודות קורסור.
+4. ENTER CURSOR MODE - מכניס את המערכת למצב קורסור.
+5. EXIT CURSOR MODE - יוצא ממצב קורסור ומעדכן את קובץ ה-README.
+6. ACCEPT ALL - מפעיל את פעולת "ACCEPT ALL" (לחיצה על הכפתור המיועד).
+7. GO CHAT - מזיז את הקורסור לתיבת הקלט.
+8. GO CHAT REGION - מעדכן את אזור הצ'אט בהתבסס על תבנית 'chat_area.png'.
+9. GETIMAGESNOW - לוכד ושולח תמונה עדכנית של אזור הצ'אט.
+10. TOGGLE AUTONOMOUS - מפעיל או מכבה מצב שיחה אוטונומית; המערכת מייצרת פקודות באופן אוטומטי על סמך תוכן הצ'אט.
+11. פקודות נוספות: QA, BACKUP, INDEX, READ CHAT ועוד.
+
+הוראות התקנה:
+- יש למקם את התמונות הנדרשות (chat_input.png ו-chat_area.png) באותה תקייה שבה נמצאת המערכת.
+- יש להתקין ולהגדיר כהלכה את Tesseract OCR.
+- השרת חייב להיות נגיש דרך האינטרנט (לדוגמה, באמצעות ngrok) כדי לשלוח מדיה דרך וואטסאפ.
+- שמור את המדריך הזה (UserManual.txt) באותה תקייה, כך שיוגש למשתמשים.
+
+פתרון תקלות:
+- אם פקודה אינה פועלת, בדוק את התחביר.
+- ודא שקואורדינטות המסך והתמונות מוגדרות כהלכה.
+- בדוק את לוגי השרת לקבלת הודעות שגיאה.
+- לפניות נוספות, פנה למנהל המערכת.
+
+תודה על השימוש במערכת ניהול הצ'אט!
